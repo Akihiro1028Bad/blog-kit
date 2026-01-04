@@ -33,15 +33,23 @@ The script will:
 3. Analyze for ambiguities and undefined areas
 4. Output JSON with analysis results
 
-**AI Processing**:
-After the script runs, the AI should:
-1. Read the full spec.md content
-2. Identify all ambiguities and undefined areas
-3. Generate structured questions with suggested answers
-4. Present questions to the user in this format:
+**AI Processing - CRITICAL: Interactive One-by-One Flow**:
+After the script runs, the AI MUST follow this interactive flow:
 
+1. Read the full spec.md content
+2. Identify all ambiguities and undefined areas (prioritize up to 3-5 most critical)
+3. **Present ONLY Question 1** to the user (see format below)
+4. **WAIT for user's response** - do NOT proceed until user answers
+5. After receiving the answer:
+   - Parse the response (single letter A/B/C or "Custom - [description]")
+   - Update spec.md immediately with Question 1's answer
+   - **Then present Question 2** (if more questions exist)
+6. Repeat steps 3-5 for each remaining question
+7. After all questions are answered, show a summary of clarifications
+
+**Question Format** (present ONE at a time):
 ---
-## Question 1: [Topic]
+## Question 1 of [Total]: [Topic]
 
 **Context**: [Where this appears in spec.md, including line number or section]
 **What we need to know**: [What information is needed]
@@ -54,23 +62,31 @@ After the script runs, the AI should:
 | C | [Option C description] | [What this choice means for the article] |
 | Custom | Your own approach | [Describe your preference] |
 
-**Your choice**: _[Wait for user response]_
+**Your choice**: _[Wait for user response - DO NOT proceed until answered]_
 ---
 
-5. Collect user responses (format: "Q1: A", "Q2: B", "Q3: Custom - [description]")
-6. Update spec.md by:
-   - Replacing `[NEEDS CLARIFICATION: ...]` markers with the user's answers
-   - Replacing "To be defined" placeholders with specific content
-   - Adding clarifications to ambiguous sections
-   - Preserving the original structure and formatting
+**Answer Format**:
+- User responds with: "A", "B", "C", or "Custom - [description]"
+- **DO NOT** ask for multiple answers at once
+- **DO NOT** present the next question until the current one is answered
 
-**Guidelines**:
-- Limit to 3-5 questions per session to avoid overwhelming the user
+**spec.md Update Strategy**:
+- **Recommended**: Update spec.md after each question is answered
+  - This allows the user to see progress incrementally
+  - Each update replaces one "To be defined" or `[NEEDS CLARIFICATION]` marker
+- Preserve the original structure and formatting when updating
+
+**Critical Guidelines**:
+- **ONE QUESTION AT A TIME**: Never present multiple questions simultaneously
+- **WAIT FOR RESPONSE**: Always wait for user input before proceeding
+- **IMMEDIATE UPDATES**: Update spec.md after each answer (recommended)
+- **PROGRESS INDICATION**: Show which question number you're on (e.g., "Question 1 of 3")
+- **SESSION LIMIT**: Limit to 3-5 questions per session to avoid overwhelming the user
 - Focus on the most critical ambiguities first
 - If focus areas are provided, prioritize questions related to those areas
 - Each question should be independent and answerable
 - Provide clear implications for each answer choice
-- After updating spec.md, show a summary of what was clarified
+- After all questions are answered, show a summary of what was clarified
 
 After execution, spec.md will be updated with clarifications. The user can then proceed to `/blogkit.plan` to create a writing plan based on the clarified specification.
 
