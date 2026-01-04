@@ -7,10 +7,11 @@ Spec-Kit風のブログ執筆支援ツール。エディタのスラッシュコ
 BlogKitは、GitHubのSpec-Kitを参考にしたブログ執筆支援ツールです。以下のワークフローを提供します：
 
 1. **`/blogkit.specify`** - 記事の仕様を作成
-2. **`/blogkit.plan`** - 執筆計画を作成
-3. **`/blogkit.tasks`** - 執筆タスクに分解
-4. **`/blogkit.write`** - 記事を執筆（AI支援）
-5. **`/blogkit.publish`** - 公開準備
+2. **`/blogkit.clarify`** - 仕様の曖昧さを解決し、要件を詰める
+3. **`/blogkit.plan`** - 執筆計画を作成
+4. **`/blogkit.tasks`** - 執筆タスクに分解
+5. **`/blogkit.write`** - 記事を執筆（AI支援）
+6. **`/blogkit.publish`** - 公開準備
 
 ## 初期化
 
@@ -34,7 +35,21 @@ BlogKitは、GitHubのSpec-Kitを参考にしたブログ執筆支援ツール�
 
 これにより、`posts/001-typescript-type-safety/`ディレクトリが作成され、`spec.md`が生成されます。
 
-### 2. 執筆計画の作成
+### 2. 仕様の明確化（オプション）
+
+```
+/blogkit.clarify
+```
+
+または、特定の領域にフォーカスする場合：
+
+```
+/blogkit.clarify Focus on target audience and content structure
+```
+
+`spec.md`の曖昧な点や未定義の項目を特定し、対話的に要件を詰めます。AIが質問を生成し、ユーザーの回答に基づいて`spec.md`を更新します。
+
+### 3. 執筆計画の作成
 
 ```
 /blogkit.plan コード例はTypeScriptで記述。実践的なサンプルを3-4個含める。図表は不要。初心者にもわかりやすい説明を心がける。
@@ -42,7 +57,7 @@ BlogKitは、GitHubのSpec-Kitを参考にしたブログ執筆支援ツール�
 
 `plan.md`が生成されます。
 
-### 3. タスク分解
+### 4. タスク分解
 
 ```
 /blogkit.tasks
@@ -50,7 +65,7 @@ BlogKitは、GitHubのSpec-Kitを参考にしたブログ執筆支援ツール�
 
 `tasks.md`が生成され、執筆タスクが分解されます。
 
-### 4. 記事執筆
+### 5. 記事執筆
 
 ```
 /blogkit.write
@@ -58,7 +73,7 @@ BlogKitは、GitHubのSpec-Kitを参考にしたブログ執筆支援ツール�
 
 AI支援により、`article.md`が生成されます。
 
-### 5. 公開準備
+### 6. 公開準備
 
 ```
 /blogkit.publish

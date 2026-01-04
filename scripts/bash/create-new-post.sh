@@ -61,6 +61,7 @@ SHORT_NAME=$(echo "$SHORT_NAME" | cut -c1-50)
 # Create directory name
 DIR_NAME="${ARTICLE_NUM}-${SHORT_NAME}"
 POST_DIR="$POSTS_DIR/$DIR_NAME"
+BRANCH_NAME="$DIR_NAME"
 
 # Create directory structure
 mkdir -p "$POST_DIR/assets"
@@ -106,13 +107,44 @@ To be defined
 EOF
 fi
 
+# Create and switch to Git branch (if in a Git repository)
+HAS_GIT=false
+if command -v git >/dev/null 2>&1 && git rev-parse --git-dir >/dev/null 2>&1; then
+    HAS_GIT=true
+    
+    # Check for uncommitted changes (warning only, don't block)
+    if ! git diff-index --quiet HEAD -- 2>/dev/null; then
+        echo "Warning: You have uncommitted changes. Consider committing or stashing them." >&2
+    fi
+    
+    # Check if branch already exists
+    if git show-ref --verify --quiet "refs/heads/$BRANCH_NAME" 2>/dev/null; then
+        echo "Branch $BRANCH_NAME already exists. Switching to it." >&2
+        git checkout "$BRANCH_NAME" 2>/dev/null || {
+            echo "Error: Failed to switch to branch $BRANCH_NAME" >&2
+            exit 1
+        }
+    else
+        # Create new branch and switch to it
+        echo "Creating and switching to branch: $BRANCH_NAME" >&2
+        git checkout -b "$BRANCH_NAME" 2>/dev/null || {
+            echo "Error: Failed to create branch $BRANCH_NAME" >&2
+            exit 1
+        }
+    fi
+else
+    echo "Warning: Not a Git repository. Branch creation skipped." >&2
+fi
+
 # Output JSON for command integration
 cat <<EOF
 {
   "ARTICLE_NUM": "$ARTICLE_NUM",
   "DIR_NAME": "$DIR_NAME",
   "POST_DIR": "$POST_DIR",
-  "SPEC_FILE": "$POST_DIR/spec.md"
+  "SPEC_FILE": "$POST_DIR/spec.md",
+  "BRANCH_NAME": "$BRANCH_NAME",
+  "HAS_GIT": $HAS_GIT
 }
 EOF
 
